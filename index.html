@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARDA PANEL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">WARDA PANEL</div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#" class="nav-link active" data-target="anasayfa"><i class="fas fa-chart-line"></i> Ana Sayfa</a></li>
+                <li><a href="#" class="nav-link" data-target="yapilan-isler"><i class="fas fa-briefcase"></i> Yapılan İşler</a></li>
+                <li><a href="#" class="nav-link" data-target="gider-gelir"><i class="fas fa-money-check-alt"></i> Giderler / Gelirler</a></li>
+                <li class="has-submenu">
+                    <a href="#" class="nav-link" data-target="finansal-durum"><i class="fas fa-hand-holding-usd"></i> Finansal Durum</a>
+                    <ul class="submenu">
+                        <li><a href="#" class="nav-link" data-target="cekler">Çekler</a></li>
+                        <li><a href="#" class="nav-link" data-target="krediler">Krediler</a></li>
+                        <li><a href="#" class="nav-link" data-target="kartlar">Kredi Kartları</a></li>
+                        <li><a href="#" class="nav-link" data-target="ek-hesaplar">Ek Hesaplar </a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu">
+                    <a href="#" class="nav-link" data-target="borc-alacak-yonetimi"><i class="fas fa-exchange-alt"></i> Borç / Alacak Yönetimi</a>
+                    <ul class="submenu">
+                        <li><a href="#" class="nav-link" data-target="borclar">Piyasa Borçları</a></li>
+                        <li><a href="#" class="nav-link" data-target="alacaklar">Piyasa Alacakları</a></li>
+                    </ul>
+                </li>
+                <li class="has-submenu">
+                    <a href="#" class="nav-link" data-target="ust-firma-carisi"><i class="fas fa-users"></i> Tedarikçi Carileri</a>
+                    <ul class="submenu" id="ust-firma-cari-submenu">
+                        <li style="padding: 15px 25px; color: #adb5bd; font-size: 13px; font-style: italic;">Yükleniyor...</li>
+                    </ul>
+                </li>
+                <li><a href="#" class="nav-link" data-target="sirketler"><i class="fas fa-building"></i> Tedarikçiler</a></li>
+                <li><a href="#" class="nav-link" data-target="bilanco"><i class="fas fa-calculator"></i> Bilanço</a></li>
+                <li><a href="#" class="nav-link" data-target="odeme-takip"><i class="fas fa-credit-card"></i> Ödeme Takip</a></li>
+                <li><a href="#" class="nav-link" data-target="proje-takip"><i class="fas fa-tasks"></i> Proje Takip</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        
+        <!-- ANA SAYFA -->
+        <div id="anasayfa" class="content-section active">
+            <div class="page-header">
+                <h1>Ana Sayfa Özeti</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#anasayfa">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#anasayfa">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                </div>
+            </div>
+            <!-- YAKLAŞAN ÖDEMELER VE NOTLAR - YAN YANA -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                <!-- YAKLAŞAN ÖDEMELER (7 GÜN) -->
+                <div class="sub-section" style="background: linear-gradient(to bottom, #fff5f5, #fff); border: 1px solid #fee; border-radius: 12px; padding: 20px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid #fee2e2;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(239, 68, 68, 0.2);">
+                            <i class="fas fa-exclamation-triangle" style="color: white; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <h2 style="font-size: 15px; margin: 0; color: #dc2626; font-weight: 700;">Önümüzdeki 7 Gün</h2>
+                            <p style="font-size: 11px; margin: 0; color: #94a3b8;">Yaklaşan Ödemeler</p>
+                        </div>
+                    </div>
+                    <div id="upcoming-payments-container" style="max-height: 350px; overflow-y: auto; padding-right: 5px;"></div>
+                </div>
+
+                <!-- NOTLARIM -->
+                <div class="sub-section" style="background: linear-gradient(to bottom, #fffbeb, #fff); border: 1px solid #fef3c7; border-radius: 12px; padding: 20px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid #fde68a;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(245, 158, 11, 0.2);">
+                            <i class="fas fa-sticky-note" style="color: white; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <h2 style="font-size: 15px; margin: 0; color: #d97706; font-weight: 700;">Notlarım</h2>
+                            <p style="font-size: 11px; margin: 0; color: #94a3b8;">Hızlı Notlar</p>
+                        </div>
+                    </div>
+                    <div id="notes-container" style="max-height: 168px; overflow-y: auto; padding-right: 5px;"></div>
+                </div>
+            </div>
+            
+            <div class="dashboard-cards mini-cards">
+                <div class="card mini-card" id="total-cash-card"><div class="card-icon checks" id="total-cash-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="card-content"><span class="card-title" id="total-cash-title">KASADAKI GÜNCEL BAKİYE</span><span class="card-value" id="total-cash-value">₺0,00</span></div></div>
+                <div class="card mini-card"><div class="card-icon income"><i class="fas fa-balance-scale"></i></div><div class="card-content"><span class="card-title">NET NAKİT BİLANÇOSU</span><span class="card-value" id="cash-balance-value">₺0,00</span></div></div>
+                <div class="card mini-card"><div class="card-icon checks"><i class="fas fa-warehouse"></i></div><div class="card-content"><span class="card-title">AKTİF MAL VARLIĞI</span><span class="card-value" id="asset-balance-value">₺0,00</span></div></div>
+            </div>
+            <div class="sub-section">
+                <h2>İşler & Tahsilatlar</h2>
+                <div class="dashboard-cards mini-cards job-summary-cards">
+                    <div class="card mini-card"><div class="card-icon checks"><i class="fas fa-briefcase"></i></div><div class="card-content"><span class="card-title">TOPLAM İŞ TUTARI (KDV DAHİL)</span><span class="card-value" id="main-total-job-amount">₺0,00</span></div></div>
+                    <div class="card mini-card"><div class="card-icon income"><i class="fas fa-check-circle"></i></div><div class="card-content"><span class="card-title">TOPLAM TAHSİLAT</span><span class="card-value" id="main-collected-amount">₺0,00</span></div></div>
+                    <div class="card mini-card"><div class="card-icon expense"><i class="fas fa-hourglass-half"></i></div><div class="card-content"><span class="card-title">KALAN ALACAK</span><span class="card-value" id="main-remaining-amount">₺0,00</span></div></div>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div class="sub-section">
+                    <h2>Yaklaşan Çek Ödeme Grafiği</h2>
+                    <div class="chart-container"><div class="chart-y-axis" id="chart-y-axis-check"></div><div class="chart-bars-container" id="chart-bars-container-check"></div></div>
+                </div>
+                <div class="sub-section">
+                    <h2>Aylık Gelir/Gider Dengesi</h2>
+                    <div id="balance-cards-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- YAPILAN İŞLER -->
+        <div id="yapilan-isler" class="content-section">
+            <div class="page-header">
+                <h1>Yapılan İşler & Projeler</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#yapilan-isler">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#yapilan-isler">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-job-modal-btn" class="btn btn-primary" data-modal-target="add-job-modal">
+                        <i class="fas fa-plus"></i> Yeni İş Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="sub-section collapsible-section">
+                <div class="collapsible-header"><h2>İşler Özeti</h2><span class="toggle-icon"><i class="fas fa-chevron-up"></i></span></div>
+                <div class="collapsible-content">
+                    <div class="dashboard-cards mini-cards">
+                        <div class="card mini-card"><div class="card-icon checks"><i class="fas fa-briefcase"></i></div><div class="card-content"><span class="card-title">TOPLAM İŞ TUTARI (KDV Dahil)</span><span class="card-value" id="total-job-vat-amount">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon income"><i class="fas fa-check-circle"></i></div><div class="card-content"><span class="card-title">TOPLAM TAHSİLAT</span><span class="card-value" id="total-job-collected">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon expense"><i class="fas fa-hourglass-half"></i></div><div class="card-content"><span class="card-title">KALAN ALACAK</span><span class="card-value" id="total-job-remaining">₺0,00</span></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Devam Eden İşler</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>İŞ ADI</th><th>MÜŞTERİ</th><th>ŞİRKET</th><th>FATURA DURUMU</th><th class="text-right">TUTAR (NET)</th><th class="text-right">TUTAR (KDV DAHİL)</th><th class="text-right">TAHSİL EDİLEN</th><th class="text-right">KALAN BAKİYE</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="ongoing-jobs-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Tamamlanmış İşler</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>İŞ ADI</th><th>MÜŞTERİ</th><th>ŞİRKET</th><th>FATURA DURUMU</th><th class="text-right">TUTAR (NET)</th><th class="text-right">TUTAR (KDV DAHİL)</th><th class="text-right">TAHSİL EDİLEN</th><th class="text-right">KALAN BAKİYE</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="completed-jobs-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- GİDER GELİR -->
+        <div id="gider-gelir" class="content-section">
+            <div class="page-header">
+                <h1>Giderler ve Gelirler</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#gider-gelir">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#gider-gelir">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                </div>
+            </div>
+            
+            <!-- AYLIK BAKİYE (EN ÜSTTE) -->
+            <div class="sub-section">
+                <div class="sub-section-header">
+                    <h2>Aylık Bakiye (Filtrelenen Ay)</h2>
+                </div>
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-icon income">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title">TOPLAM GELİR</span>
+                            <span class="card-value" id="monthly-total-income">₺0,00</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon expense">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title">TOPLAM GİDER</span>
+                            <span class="card-value" id="monthly-total-expense">₺0,00</span>
+                        </div>
+                    </div>
+                    <div class="card" id="balance-card">
+                        <div class="card-icon checks">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title">NET AYLIK BAKİYE</span>
+                            <span class="card-value" id="monthly-balance">₺0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- GELİR KAYITLARI -->
+            <div class="sub-section">
+                <div class="sub-section-header">
+                    <h2>Gelir Kayıtları</h2>
+                    <div class="action-group">
+                        <select id="income-month-filter">
+                            <option value="all">Tüm Aylar</option>
+                        </select>
+                        <button id="open-income-modal-btn" class="btn btn-primary" data-modal-target="add-income-modal">
+                            <i class="fas fa-plus"></i> Gelir Ekle
+                        </button>
+                    </div>
+                </div>
+                <div class="dashboard-cards" id="income-category-summary"></div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">FİRMA ADI</th>
+                                <th style="width: 20%;">ÇEK DEFTERİ</th>
+                                <th style="width: 15%;">VADE TARİHİ</th>
+                                <th style="width: 15%; text-align: right;">TUTAR</th>
+                                <th style="width: 15%; text-align: center;">ORTAKLIK</th>
+                                <th style="width: 15%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incomes-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- GİDER KAYITLARI -->
+            <div class="sub-section">
+                <div class="sub-section-header">
+                    <h2>Gider Kayıtları</h2>
+                    <div class="action-group">
+                        <select id="expense-month-filter">
+                            <option value="all">Tüm Aylar</option>
+                        </select>
+                        <select id="expense-method-filter">
+                            <option value="all">Tüm Ödeme Şekilleri</option>
+                        </select>
+                        <button id="open-expense-modal-btn" class="btn btn-primary" data-modal-target="add-expense-modal">
+                            <i class="fas fa-plus"></i> Gider Ekle
+                        </button>
+                    </div>
+                </div>
+                <div class="dashboard-cards" id="expense-category-summary"></div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>TARİH</th>
+                                <th>KATEGORİ</th>
+                                <th>AÇIKLAMA</th>
+                                <th>ALICI</th>
+                                <th class="text-right">MİKTAR</th>
+                                <th>İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenses-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- FİNANSAL DURUM -->
+        <div id="finansal-durum" class="content-section">
+            <div class="page-header">
+                <h1>Finansal Durum Yönetimi</h1>
+            </div>
+            <p>Sol menüden detaylı finansal durum (Çekler, Krediler, vb.) seçiminizi yapınız.</p>
+        </div>
+        
+        <!-- ÇEKLER -->
+        <div id="cekler" class="content-section">
+            <div class="page-header">
+                <h1>Çekler</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#cekler">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#cekler">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <select id="check-partnership-filter">
+                        <option value="all">Tüm Ortaklıklar</option>
+                        <option value="WARDA">WARDA</option>
+                        <option value="ATÖLYE">ATÖLYE</option>
+                        <option value="BROSS">BROSS</option>
+                        <option value="ORYAP">ORYAP</option>
+                        <option value="Diğer">DİĞER</option>
+                    </select>
+                    <button id="open-check-modal-btn" class="btn btn-primary" data-modal-target="add-check-modal">
+                        <i class="fas fa-plus"></i> Yeni Çek Kaydı
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ÖZET KARTLAR -->
+            <div class="dashboard-cards mini-cards" style="margin-bottom: 30px;">
+                <div class="card mini-card">
+                    <div class="card-icon checks"><i class="fas fa-calendar-day"></i></div>
+                    <div class="card-content">
+                        <span class="card-title">BU AY ÖDENECEK</span>
+                        <span class="card-value" id="checks-this-month-count">0 Çek</span>
+                        <span class="card-subtitle" id="checks-this-month-total">₺0,00</span>
+                    </div>
+                </div>
+                <div class="card mini-card">
+                    <div class="card-icon expense"><i class="fas fa-clock"></i></div>
+                    <div class="card-content">
+                        <span class="card-title">BEKLEYEN ÇEKLER</span>
+                        <span class="card-value" id="checks-pending-count">0 Çek</span>
+                        <span class="card-subtitle" id="checks-pending-total">₺0,00</span>
+                    </div>
+                </div>
+                <div class="card mini-card">
+                    <div class="card-icon income"><i class="fas fa-check-circle"></i></div>
+                    <div class="card-content">
+                        <span class="card-title">ÖDENMİŞ ÇEKLER</span>
+                        <span class="card-value" id="checks-paid-count">0 Çek</span>
+                        <span class="card-subtitle" id="checks-paid-total">₺0,00</span>
+                    </div>
+                </div>
+                <div class="card mini-card">
+                    <div class="card-icon info"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <div class="card-content">
+                        <span class="card-title">TOPLAM ÇEK</span>
+                        <span class="card-value" id="checks-total-count">0 Çek</span>
+                        <span class="card-subtitle" id="checks-total-amount">₺0,00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BU AY ÖDENECEK ÇEKLER -->
+            <div class="sub-section">
+                <h2>Bu Ay Ödenecek Çekler</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">ORTAKLIK</th>
+                                <th style="width: 25%;">FİRMA</th>
+                                <th style="width: 20%;">ÇEK DEFTERİ</th>
+                                <th style="width: 20%;">VADE TARİHİ</th>
+                                <th style="width: 20%; text-align: right;">TUTAR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="current-month-checks-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- BEKLEYEN ÇEKLER - COLLAPSIBLE -->
+            <div class="sub-section collapsible-section">
+                <div class="collapsible-header">
+                    <h2>Bekleyen Çekler</h2>
+                    <span class="toggle-icon"><i class="fas fa-chevron-up"></i></span>
+                </div>
+                <div class="collapsible-content">
+                    <div id="pending-checks-container"></div>
+                </div>
+            </div>
+            
+            <!-- ÖDENMİŞ ÇEKLER - COLLAPSIBLE -->
+            <div class="sub-section collapsible-section">
+                <div class="collapsible-header">
+                    <h2>Ödenmiş Çekler</h2>
+                    <span class="toggle-icon"><i class="fas fa-chevron-up"></i></span>
+                </div>
+                <div class="collapsible-content">
+                    <div id="paid-checks-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KREDİLER -->
+        <div id="krediler" class="content-section">
+            <div class="page-header">
+                <h1>Krediler</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#krediler">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#krediler">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-loan-modal-btn" class="btn btn-primary" data-modal-target="add-loan-modal">
+                        <i class="fas fa-plus"></i> Yeni Kredi Kaydı
+                    </button>
+                </div>
+            </div>
+            <div class="sub-section collapsible-section">
+                <div class="collapsible-header"><h2>Kredi Özeti</h2><span class="toggle-icon"><i class="fas fa-chevron-up"></i></span></div>
+                <div class="collapsible-content">
+                    <div class="dashboard-cards mini-cards">
+                        <div class="card mini-card"><div class="card-icon expense"><i class="fas fa-calendar-alt"></i></div><div class="card-content"><span class="card-title">AYLIK TOPLAM TAKSİT</span><span class="card-value" id="total-monthly-installment">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon info"><i class="fas fa-coins"></i></div><div class="card-content"><span class="card-title">TOPLAM ANAPARA</span><span class="card-value" id="total-principal">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon income"><i class="fas fa-file-invoice-dollar"></i></div><div class="card-content"><span class="card-title">TOPLAM ÖDENEN</span><span class="card-value" id="total-paid-loan">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon checks"><i class="fas fa-exclamation-triangle"></i></div><div class="card-content"><span class="card-title">KALAN KREDİ BORCU</span><span class="card-value" id="total-remaining-loan">₺0,00</span></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Kredi Listesi</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>ÖDEME GÜNÜ</th><th>ADI</th><th class="text-right">ANAPARA</th><th class="text-right">VADE</th><th class="text-right">ÖDENEN TAKSİT</th><th class="text-right">TAKSİT TUTARI</th><th class="text-right">TOPLAM ÖDENEN</th><th class="text-right">KALAN BORÇ</th><th>İLERLEME</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="loans-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- KREDİ KARTLARI -->
+        <div id="kartlar" class="content-section">
+            <div class="page-header">
+                <h1>Kredi Kartları</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#kartlar">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#kartlar">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-card-modal-btn" class="btn btn-primary" data-modal-target="add-card-modal">
+                        <i class="fas fa-plus"></i> Yeni Kart Kaydı
+                    </button>
+                </div>
+            </div>
+            <div class="sub-section collapsible-section">
+                <div class="collapsible-header"><h2>Kart Özeti</h2><span class="toggle-icon"><i class="fas fa-chevron-up"></i></span></div>
+                <div class="collapsible-content">
+                    <div class="dashboard-cards mini-cards">
+                        <div class="card mini-card"><div class="card-icon checks"><i class="fas fa-credit-card"></i></div><div class="card-content"><span class="card-title">TOPLAM LİMİT</span><span class="card-value" id="total-card-limit">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon income"><i class="fas fa-piggy-bank"></i></div><div class="card-content"><span class="card-title">TOPLAM KULLANILABİLİR LİMİT</span><span class="card-value" id="total-available-limit">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon expense"><i class="fas fa-wallet"></i></div><div class="card-content"><span class="card-title">TOPLAM BORÇ</span><span class="card-value" id="total-card-debt">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon info"><i class="fas fa-chart-pie"></i></div><div class="card-content"><span class="card-title">KULLANIM ORANI</span><span class="card-value" id="total-usage-rate">0.00%</span></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Kart Listesi</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>BANKA / KART ADI</th><th class="text-right">LİMİT</th><th class="text-right">KULLANILABİLİR LİMİT</th><th class="text-right">GÜNCEL BORÇ</th><th>KULLANIM ORANI</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="cards-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- EK HESAPLAR -->
+        <div id="ek-hesaplar" class="content-section">
+            <div class="page-header">
+                <h1>Ek Hesaplar</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#ek-hesaplar">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#ek-hesaplar">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-overdraft-modal-btn" class="btn btn-primary" data-modal-target="add-overdraft-modal">
+                        <i class="fas fa-plus"></i> Yeni Ek Hesap Kaydı
+                    </button>
+                </div>
+            </div>
+            <div class="sub-section collapsible-section">
+                <div class="collapsible-header"><h2>Ek Hesap Özeti</h2><span class="toggle-icon"><i class="fas fa-chevron-up"></i></span></div>
+                <div class="collapsible-content">
+                    <div class="dashboard-cards mini-cards">
+                        <div class="card mini-card"><div class="card-icon checks"><i class="fas fa-university"></i></div><div class="card-content"><span class="card-title">TOPLAM LİMİT</span><span class="card-value" id="total-overdraft-limit">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon income"><i class="fas fa-hand-holding-usd"></i></div><div class="card-content"><span class="card-title">KULLANILABİLİR LİMİT</span><span class="card-value" id="total-overdraft-available-limit">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon expense"><i class="fas fa-dollar-sign"></i></div><div class="card-content"><span class="card-title">TOPLAM BORÇ</span><span class="card-value" id="total-overdraft-debt">₺0,00</span></div></div>
+                        <div class="card mini-card"><div class="card-icon info"><i class="fas fa-percent"></i></div><div class="card-content"><span class="card-title">KULLANIM ORANI</span><span class="card-value" id="total-overdraft-usage-rate">0.00%</span></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Ek Hesap Listesi</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>BANKA / EK HESAP ADI</th><th class="text-right">LİMİT</th><th class="text-right">KULLANILABİLİR LİMİT</th><th class="text-right">GÜNCEL BORÇ</th><th>KULLANIM ORANI</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="overdrafts-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- BORÇ ALACAK YÖNETİMİ -->
+        <div id="borc-alacak-yonetimi" class="content-section">
+            <div class="page-header">
+                <h1>Borç / Alacak Yönetimi</h1>
+            </div>
+            <p>Sol menüden detaylı borç/alacak seçiminizi yapınız.</p>
+        </div>
+        
+        <!-- PİYASA BORÇLARI -->
+        <div id="borclar" class="content-section">
+            <div class="page-header">
+                <h1>Piyasa Borçları</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#borclar">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#borclar">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-debt-modal-btn" class="btn btn-primary" data-modal-target="add-debt-modal">
+                        <i class="fas fa-plus"></i> Yeni Borç Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Borç Listesi</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>KİME BORÇLUYUZ</th><th>AÇIKLAMA</th><th class="text-right">TUTAR</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="debts-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PİYASA ALACAKLARI -->
+        <div id="alacaklar" class="content-section">
+            <div class="page-header">
+                <h1>Piyasa Alacakları</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#alacaklar">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#alacaklar">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-receivable-modal-btn" class="btn btn-primary" data-modal-target="add-receivable-modal">
+                        <i class="fas fa-plus"></i> Yeni Alacak Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Alacak Listesi</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>KİMDEN ALACAKLIYIZ</th><th>AÇIKLAMA</th><th class="text-right">TUTAR</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="receivables-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEDARİKÇİLER -->
+        <div id="sirketler" class="content-section">
+            <div class="page-header">
+                <h1>Tedarikçi Tanımları</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#sirketler">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#sirketler">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-company-modal-btn" class="btn btn-primary" data-modal-target="add-company-modal">
+                        <i class="fas fa-plus"></i> Yeni Tedarikçi Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="sub-section">
+                <h2>Tedarikçi Listesi</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>TEDARİKÇİ ADI</th><th>İŞLEMLER</th></tr></thead>
+                        <tbody id="companies-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEDARİKÇİ CARİ -->
+        <div id="ust-firma-carisi" class="content-section">
+            <div class="page-header">
+                <h1>Tedarikçi Cari Detayları</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#ust-firma-carisi">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#ust-firma-carisi">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                </div>
+            </div>
+            <p>Sol menüden görüntülemek istediğiniz cari hesabı seçiniz.</p>
+        </div>
+
+        <!-- BİLANÇO -->
+        <div id="bilanco" class="content-section">
+            <div class="page-header">
+                <h1>Bilanço Yönetimi</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#bilanco">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#bilanco">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                </div>
+            </div>
+            <div class="dashboard-cards" style="margin-bottom: 30px;">
+                <div class="card"><div class="card-icon checks"><i class="fas fa-balance-scale"></i></div><div class="card-content"><span class="card-title">TOPLAM VARLIKLAR</span><span class="card-value" id="bilanco-total-varliklar">₺0,00</span></div></div>
+                <div class="card"><div class="card-icon income"><i class="fas fa-arrow-up"></i></div><div class="card-content"><span class="card-title">TOPLAM ALACAKLAR</span><span class="card-value" id="bilanco-total-alacaklar">₺0,00</span></div></div>
+                <div class="card"><div class="card-icon expense"><i class="fas fa-arrow-down"></i></div><div class="card-content"><span class="card-title">TOPLAM BORÇLAR</span><span class="card-value" id="bilanco-total-borclar">₺0,00</span></div></div>
+                <div class="card"><div class="card-icon checks"><i class="fas fa-money-bill-wave"></i></div><div class="card-content"><span class="card-title">NET ÖZ SERMAYE / BİLANÇO</span><span class="card-value" id="bilanco-net-deger">₺0,00</span></div></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div class="sub-section">
+                    <div class="sub-section-header"><h2>Varlıklar</h2><button id="open-bilanco-varlik-modal-btn" class="btn btn-primary" data-modal-target="add-bilanco-varlik-modal"><i class="fas fa-plus"></i></button></div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead><tr><th>VARLIK ADI</th><th class="text-right">TUTAR</th><th>İŞLEMLER</th></tr></thead>
+                            <tbody id="bilanco-varliklar-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-section-header"><h2>Alacaklar</h2><button id="open-bilanco-alacak-modal-btn" class="btn btn-primary" data-modal-target="add-bilanco-alacak-modal"><i class="fas fa-plus"></i></button></div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead><tr><th>ALACAK ADI</th><th class="text-right">TUTAR</th><th>İŞLEMLER</th></tr></thead>
+                            <tbody id="bilanco-alacaklar-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-section-header"><h2>Borçlar</h2><button id="open-bilanco-borc-modal-btn" class="btn btn-primary" data-modal-target="add-bilanco-borc-modal"><i class="fas fa-plus"></i></button></div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead><tr><th>BORÇ ADI</th><th class="text-right">TUTAR</th><th>İŞLEMLER</th></tr></thead>
+                            <tbody id="bilanco-borclar-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÖDEME TAKİP -->
+        <div id="odeme-takip" class="content-section">
+            <div class="page-header">
+                <h1>Ödeme Takip Sistemi</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#odeme-takip">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#odeme-takip">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-payment-modal-btn" class="btn btn-primary" data-modal-target="add-payment-modal">
+                        <i class="fas fa-plus"></i> Yeni Ödeme Ekle
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ÖDEME ÖZETİ -->
+            <div class="sub-section">
+                <div class="sub-section-header">
+                    <h2>Aylık Ödeme Durumu</h2>
+                    <div class="action-group">
+                        <select id="payment-month-filter">
+                            <option value="">Ay Seçin...</option>
+                        </select>
+                        <select id="payment-year-filter">
+                            <option value="">Yıl Seçin...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="dashboard-cards mini-cards">
+                    <div class="card mini-card">
+                        <div class="card-icon info"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">BU AY TOPLAM ÖDEME</span>
+                            <span class="card-value" id="monthly-total-payments">₺0,00</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon checks"><i class="fas fa-clock"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">BEKLEYİN ÖDEMELER</span>
+                            <span class="card-value" id="pending-payments-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon expense"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">GECİKEN ÖDEMELER</span>
+                            <span class="card-value" id="overdue-payments-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon income"><i class="fas fa-check-circle"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">TAMAMLANAN ÖDEMELER</span>
+                            <span class="card-value" id="completed-payments-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BEKLEYİN ÖDEMELER -->
+            <div class="sub-section">
+                <h2>Bekleyen Ödemeler</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">ÖDEME GÜNÜ</th>
+                                <th style="width: 25%;">ALICI</th>
+                                <th style="width: 20%;">KATEGORİ</th>
+                                <th style="width: 15%; text-align: right;">TUTAR</th>
+                                <th style="width: 15%; text-align: center;">DURUM</th>
+                                <th style="width: 15%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-payments-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAMAMLANAN ÖDEMELER -->
+            <div class="sub-section">
+                <h2>Tamamlanan Ödemeler</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">ÖDEME GÜNÜ</th>
+                                <th style="width: 25%;">ALICI</th>
+                                <th style="width: 20%;">KATEGORİ</th>
+                                <th style="width: 15%; text-align: right;">TUTAR</th>
+                                <th style="width: 15%; text-align: center;">DURUM</th>
+                                <th style="width: 15%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="completed-payments-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJE TAKİP -->
+        <div id="proje-takip" class="content-section">
+            <div class="page-header">
+                <h1>Proje Takip Sistemi</h1>
+                <div class="action-group">
+                    <button class="btn btn-secondary export-btn" data-export-type="excel" data-export-target="#proje-takip">
+                        <i class="fas fa-file-excel"></i> Excel İndir
+                    </button>
+                    <button class="btn btn-secondary export-btn" data-export-type="pdf" data-export-target="#proje-takip">
+                        <i class="fas fa-file-pdf"></i> PDF İndir
+                    </button>
+                    <button id="open-project-modal-btn" class="btn btn-primary" data-modal-target="add-project-modal">
+                        <i class="fas fa-plus"></i> Yeni Proje Ekle
+                    </button>
+                </div>
+            </div>
+            
+            <!-- PROJE ÖZETİ -->
+            <div class="sub-section">
+                <h2>Proje Durumu Özeti</h2>
+                <div class="dashboard-cards mini-cards">
+                    <div class="card mini-card">
+                        <div class="card-icon checks"><i class="fas fa-cogs"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">DEVAM EDİYOR</span>
+                            <span class="card-value" id="devam-ediyor-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon" style="background-color: #e67e22;"><i class="fas fa-gavel"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">İHALE AŞAMASINDA</span>
+                            <span class="card-value" id="ihale-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon" style="background-color: #3498db;"><i class="fas fa-project-diagram"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">PROJE AŞAMASINDA</span>
+                            <span class="card-value" id="proje-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon" style="background-color: #1abc9c;"><i class="fas fa-comments"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">GÖRÜŞME AŞAMASINDA</span>
+                            <span class="card-value" id="gorusme-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon income"><i class="fas fa-check-circle"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">TAMAMLANDI</span>
+                            <span class="card-value" id="tamamlandi-count">0</span>
+                        </div>
+                    </div>
+                    <div class="card mini-card">
+                        <div class="card-icon expense"><i class="fas fa-times-circle"></i></div>
+                        <div class="card-content">
+                            <span class="card-title">İPTAL EDİLDİ</span>
+                            <span class="card-value" id="iptal-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEVAM EDİYOR -->
+            <div class="sub-section">
+                <h2>Devam Ediyor</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">PROJE ADI</th>
+                                <th style="width: 30%;">MÜŞTERİ</th>
+                                <th style="width: 20%; text-align: center;">DURUM</th>
+                                <th style="width: 10%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="devam-ediyor-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- İHALE AŞAMASINDA -->
+            <div class="sub-section">
+                <h2>İhale Aşamasında</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">PROJE ADI</th>
+                                <th style="width: 30%;">MÜŞTERİ</th>
+                                <th style="width: 20%; text-align: center;">DURUM</th>
+                                <th style="width: 10%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ihale-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PROJE AŞAMASINDA -->
+            <div class="sub-section">
+                <h2>Proje Aşamasında</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">PROJE ADI</th>
+                                <th style="width: 30%;">MÜŞTERİ</th>
+                                <th style="width: 20%; text-align: center;">DURUM</th>
+                                <th style="width: 10%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proje-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- GÖRÜŞME AŞAMASINDA -->
+            <div class="sub-section">
+                <h2>Görüşme Aşamasında</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">PROJE ADI</th>
+                                <th style="width: 30%;">MÜŞTERİ</th>
+                                <th style="width: 20%; text-align: center;">DURUM</th>
+                                <th style="width: 10%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gorusme-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAMAMLANDI -->
+            <div class="sub-section">
+                <h2>Tamamlandı</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">PROJE ADI</th>
+                                <th style="width: 30%;">MÜŞTERİ</th>
+                                <th style="width: 20%; text-align: center;">DURUM</th>
+                                <th style="width: 10%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tamamlandi-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- İPTAL EDİLDİ -->
+            <div class="sub-section">
+                <h2>İptal Edildi</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">PROJE ADI</th>
+                                <th style="width: 30%;">MÜŞTERİ</th>
+                                <th style="width: 20%; text-align: center;">DURUM</th>
+                                <th style="width: 10%; text-align: center;">İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="iptal-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <!-- MODALS (Tüm modal kodlarınız aynen kalacak - uzun olduğu için buraya yazmadım) -->
+    <div id="add-company-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Tedarikçi Ekle</h2><span class="close-modal">&times;</span></div><form id="add-company-form"><div class="form-group"><label for="company-name">Tedarikçi Adı</label><input type="text" id="company-name" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-company-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Tedarikçi Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-company-form"><input type="hidden" id="edit-company-id"><div class="form-group"><label for="edit-company-name">Tedarikçi Adı</label><input type="text" id="edit-company-name" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-job-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni İş Ekle</h2><span class="close-modal">&times;</span></div><form id="add-job-form"><div class="form-group"><label for="job-name">İşin Adı</label><input type="text" id="job-name" required></div><div class="form-group"><label for="job-customer">Müşteri (Kurum)</label><select id="job-customer" required></select></div><div class="form-group" id="job-customer-other-group" style="display:none;"><label for="job-customer-other">Müşteri Adı (Diğer)</label><input type="text" id="job-customer-other"></div><div class="form-group"><label for="job-company">Şirket (Kategori)</label><select id="job-company" required></select></div><div class="form-group" id="job-company-other-group" style="display:none;"><label for="job-company-other">Şirket Adı (Diğer)</label><input type="text" id="job-company-other"></div><div class="form-group"><label for="job-invoice-status">Fatura Durumu</label><select id="job-invoice-status" required><option value="pending-invoice">Fatura Bekliyor</option><option value="invoiced">Faturalandı</option></select></div><div class="form-group"><label for="job-amount">Tutar (Net ₺)</label><input type="number" step="0.01" id="job-amount" required></div><div class="form-group"><label for="job-collected">Tahsil Edilen Tutar (₺)</label><input type="number" step="0.01" id="job-collected" value="0"></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-job-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>İş Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-job-form"><input type="hidden" id="edit-job-id"><div class="form-group"><label for="edit-job-name">İşin Adı</label><input type="text" id="edit-job-name" required></div><div class="form-group"><label for="edit-job-customer">Müşteri (Kurum)</label><select id="edit-job-customer" required></select></div><div class="form-group" id="edit-job-customer-other-group" style="display:none;"><label for="edit-job-customer-other">Müşteri Adı (Diğer)</label><input type="text" id="edit-job-customer-other"></div><div class="form-group"><label for="edit-job-company">Şirket (Kategori)</label><select id="edit-job-company" required></select></div><div class="form-group" id="edit-job-company-other-group" style="display:none;"><label for="edit-job-company-other">Şirket Adı (Diğer)</label><input type="text" id="edit-job-company-other"></div><div class="form-group"><label for="edit-job-invoice-status">Fatura Durumu</label><select id="edit-job-invoice-status" required><option value="pending-invoice">Fatura Bekliyor</option><option value="invoiced">Faturalandı</option></select></div><div class="form-group"><label for="edit-job-amount">Tutar (Net ₺)</label><input type="number" step="0.01" id="edit-job-amount" required></div><div class="form-group"><label for="edit-job-collected">Tahsil Edilen Tutar (₺)</label><input type="number" step="0.01" id="edit-job-collected" value="0"></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <!-- TEDARİKÇİ MODALLARI -->
+    <div id="cari-job-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="cari-job-modal-title">Yeni Borç Kaydı Ekle</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="add-cari-job-form">
+                <input type="hidden" id="cari-job-id">
+                <input type="hidden" id="cari-job-company-name" readonly>
+                <div class="form-group">
+                    <label for="cari-job-description">Açıklama (Fatura No, İş Tanımı vb.)</label>
+                    <input type="text" id="cari-job-description" required>
+                </div>
+                <div class="form-group">
+                    <label for="cari-job-amount">Fatura Tutarı (₺)</label>
+                    <input type="number" id="cari-job-amount" step="0.01" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary close-modal-btn">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="cari-expense-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="cari-expense-modal-title">Yeni Ödeme Ekle</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="add-cari-expense-form">
+                <input type="hidden" id="cari-expense-id">
+                <input type="hidden" id="cari-expense-company-name" readonly>
+                <div class="form-group">
+                    <label for="cari-expense-date">Ödeme Tarihi</label>
+                    <input type="date" id="cari-expense-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="cari-expense-description">Açıklama</label>
+                    <input type="text" id="cari-expense-description" required>
+                </div>
+                <div class="form-group">
+                    <label for="cari-expense-amount">Ödeme Miktarı (₺)</label>
+                    <input type="number" id="cari-expense-amount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="cari-expense-method">Ödeme Şekli</label>
+                    <select id="cari-expense-method" required>
+                        <option value="">Seçiniz...</option>
+                        <option value="nakit">NAKİT</option>
+                        <option value="banka">BANKA</option>
+                        <option value="kredi karti">KREDİ KARTI</option>
+                        <option value="çek">ÇEK</option>
+                        <option value="havale/eft">HAVALE/EFT</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary close-modal-btn">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-check-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Çek Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-check-form"><div class="form-group"><label for="check-given-date">Veriliş Tarihi</label><input type="date" id="check-given-date" required></div><div class="form-group"><label for="check-partnership-category">Ortaklık Sekmesi</label><select id="check-partnership-category" required><option value="" disabled selected>Ortaklık Seçiniz...</option><option value="WARDA">WARDA</option><option value="ATÖLYE">ATÖLYE</option><option value="BROSS">BROSS</option><option value="ORYAP">ORYAP</option><option value="Diğer">DİĞER (Belirtiniz)</option></select></div><div class="form-group" id="check-partnership-category-other-group" style="display:none;"><label for="check-partnership-category-other">Diğer Ortaklığı Belirtin</label><input type="text" id="check-partnership-category-other"></div><div class="form-group"><label for="check-company">Firma</label><input type="text" id="check-company" required></div><div class="form-group"><label for="check-checkbook-name">Çek Defteri Adı</label><input type="text" id="check-checkbook-name" required></div><div class="form-group"><label for="check-due-date">Vade Tarihi</label><input type="date" id="check-due-date" required></div><div class="form-group"><label for="check-amount">Tutar (₺)</label><input type="number" step="0.01" id="check-amount" required></div><div class="form-group"><label for="check-responsible-party">Ödeme Sorumlusu</label><select id="check-responsible-party" required><option value="company">Şirket (Tam Sorumluluk)</option><option value="partnership">Ortaklık Payı Kadar</option></select></div><div class="form-group" id="check-share-group" style="display:none;"><label for="check-company-share">Şirket Ödeme Payı (%)</label><input type="number" step="0.01" min="0" max="100" id="check-company-share" value="50"></div><div class="form-group"><label for="check-status">Durum</label><select id="check-status"><option value="waiting">Bekliyor</option><option value="paid">Ödendi</option></select></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-check-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Çek Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-check-form"><input type="hidden" id="edit-check-id"><div class="form-group"><label for="edit-check-given-date">Veriliş Tarihi</label><input type="date" id="edit-check-given-date" required></div><div class="form-group"><label for="edit-check-partnership-category">Ortaklık Sekmesi</label><select id="edit-check-partnership-category" required><option value="" disabled>Ortaklık Seçiniz...</option><option value="WARDA">WARDA</option><option value="ATÖLYE">ATÖLYE</option><option value="BROSS">BROSS</option><option value="ORYAP">ORYAP</option><option value="Diğer">DİĞER (Belirtiniz)</option></select></div><div class="form-group" id="edit-check-partnership-category-other-group" style="display:none;"><label for="edit-check-partnership-category-other">Diğer Ortaklığı Belirtin</label><input type="text" id="edit-check-partnership-category-other"></div><div class="form-group"><label for="edit-check-company">Firma</label><input type="text" id="edit-check-company" required></div><div class="form-group"><label for="edit-check-checkbook-name">Çek Defteri Adı</label><input type="text" id="edit-check-checkbook-name" required></div><div class="form-group"><label for="edit-check-due-date">Vade Tarihi</label><input type="date" id="edit-check-due-date" required></div><div class="form-group"><label for="edit-check-amount">Tutar (₺)</label><input type="number" step="0.01" id="edit-check-amount" required></div><div class="form-group"><label for="edit-check-responsible-party">Ödeme Sorumlusu</label><select id="edit-check-responsible-party" required><option value="company">Şirket (Tam Sorumluluk)</option><option value="partnership">Ortaklık Payı Kadar</option></select></div><div class="form-group" id="edit-check-share-group" style="display:none;"><label for="edit-check-company-share">Şirket Ödeme Payı (%)</label><input type="number" step="0.01" min="0" max="100" id="edit-check-company-share"></div><div class="form-group"><label for="edit-check-status">Durum</label><select id="edit-check-status"><option value="waiting">Bekliyor</option><option value="paid">Ödendi</option></select></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-loan-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Kredi Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-loan-form"><div class="form-group"><label for="loan-name">Kredi Adı / Banka</label><input type="text" id="loan-name" required></div><div class="form-group"><label for="loan-payment-day">Ödeme Günü (Ayın)</label><input type="number" min="1" max="31" id="loan-payment-day" required></div><div class="form-group"><label for="loan-principal">Anapara (₺)</label><input type="number" step="0.01" id="loan-principal" required></div><div class="form-group"><label for="loan-term">Vade (Ay)</label><input type="number" min="1" id="loan-term" required></div><div class="form-group"><label for="loan-paid-installments">Ödenen Taksit Sayısı</label><input type="number" min="0" id="loan-paid-installments" required></div><div class="form-group"><label for="loan-installment-amount">Taksit Tutarı (₺)</label><input type="number" step="0.01" id="loan-installment-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-loan-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Kredi Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-loan-form"><input type="hidden" id="edit-loan-id"><div class="form-group"><label for="edit-loan-name">Kredi Adı / Banka</label><input type="text" id="edit-loan-name" required></div><div class="form-group"><label for="edit-loan-payment-day">Ödeme Günü (Ayın)</label><input type="number" min="1" max="31" id="edit-loan-payment-day" required></div><div class="form-group"><label for="edit-loan-principal">Anapara (₺)</label><input type="number" step="0.01" id="edit-loan-principal" required></div><div class="form-group"><label for="edit-loan-term">Vade (Ay)</label><input type="number" min="1" id="edit-loan-term" required></div><div class="form-group"><label for="edit-loan-paid-installments">Ödenen Taksit Sayısı</label><input type="number" min="0" id="edit-loan-paid-installments" required></div><div class="form-group"><label for="edit-loan-installment-amount">Taksit Tutarı (₺)</label><input type="number" step="0.01" id="edit-loan-installment-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-card-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Kart Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-card-form"><div class="form-group"><label for="card-name">Kart Adı / Banka</label><input type="text" id="card-name" required></div><div class="form-group"><label for="card-limit">Kart Limiti (₺)</label><input type="number" step="0.01" id="card-limit" required></div><div class="form-group"><label for="card-available-limit">Kullanılabilir Limit (₺)</label><input type="number" step="0.01" id="card-available-limit" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-card-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Kart Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-card-form"><input type="hidden" id="edit-card-id"><div class="form-group"><label for="edit-card-name">Kart Adı / Banka</label><input type="text" id="edit-card-name" required></div><div class="form-group"><label for="edit-card-limit">Kart Limiti (₺)</label><input type="number" step="0.01" id="edit-card-limit" required></div><div class="form-group"><label for="edit-card-available-limit">Kullanılabilir Limit (₺)</label><input type="number" step="0.01" id="edit-card-available-limit" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-overdraft-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Ek Hesap Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-overdraft-form"><div class="form-group"><label for="overdraft-name">Ek Hesap Adı / Banka</label><input type="text" id="overdraft-name" required></div><div class="form-group"><label for="overdraft-limit">Ek Hesap Limiti (₺)</label><input type="number" step="0.01" id="overdraft-limit" required></div><div class="form-group"><label for="overdraft-available-limit">Kullanılabilir Limit (₺)</label><input type="number" step="0.01" id="overdraft-available-limit" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-overdraft-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Ek Hesap Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-overdraft-form"><input type="hidden" id="edit-overdraft-id"><div class="form-group"><label for="edit-overdraft-name">Ek Hesap Adı / Banka</label><input type="text" id="edit-overdraft-name" required></div><div class="form-group"><label for="edit-overdraft-limit">Ek Hesap Limiti (₺)</label><input type="number" step="0.01" id="edit-overdraft-limit" required></div><div class="form-group"><label for="edit-overdraft-available-limit">Kullanılabilir Limit (₺)</label><input type="number" step="0.01" id="edit-overdraft-available-limit" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-debt-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Piyasa Borcu Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-debt-form"><div class="form-group"><label for="debt-to">Borçlu Olunan Kişi/Kurum</label><input type="text" id="debt-to" required></div><div class="form-group"><label for="debt-description">Açıklama</label><input type="text" id="debt-description" required></div><div class="form-group"><label for="debt-amount">Tutar (₺)</label><input type="number" step="0.01" id="debt-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-debt-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Piyasa Borcu Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-debt-form"><input type="hidden" id="edit-debt-id"><div class="form-group"><label for="edit-debt-to">Borçlu Olunan Kişi/Kurum</label><input type="text" id="edit-debt-to" required></div><div class="form-group"><label for="edit-debt-description">Açıklama</label><input type="text" id="edit-debt-description" required></div><div class="form-group"><label for="edit-debt-amount">Tutar (₺)</label><input type="number" step="0.01" id="edit-debt-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-receivable-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Piyasa Alacağı Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-receivable-form"><div class="form-group"><label for="receivable-from">Alacaklı Olunan Kişi/Kurum</label><input type="text" id="receivable-from" required></div><div class="form-group"><label for="receivable-description">Açıklama</label><input type="text" id="receivable-description" required></div><div class="form-group"><label for="receivable-amount">Tutar (₺)</label><input type="number" step="0.01" id="receivable-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-receivable-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Piyasa Alacağı Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-receivable-form"><input type="hidden" id="edit-receivable-id"><div class="form-group"><label for="edit-receivable-from">Alacaklı Olunan Kişi/Kurum</label><input type="text" id="edit-receivable-from" required></div><div class="form-group"><label for="edit-receivable-description">Açıklama</label><input type="text" id="edit-receivable-description" required></div><div class="form-group"><label for="edit-receivable-amount">Tutar (₺)</label><input type="number" step="0.01" id="edit-receivable-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-expense-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Gider Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-expense-form"><div class="form-group"><label for="expense-date">Tarih</label><input type="date" id="expense-date" required></div><div class="form-group"><label for="expense-category">Kategori</label><select id="expense-category" required></select></div><div class="form-group" id="expense-category-other-group" style="display:none;"><label for="expense-category-other">Kategori Adı (Diğer)</label><input type="text" id="expense-category-other"></div><div class="form-group"><label for="expense-description">Açıklama</label><input type="text" id="expense-description" required></div><div class="form-group"><label for="expense-payee">Alıcı</label><input type="text" id="expense-payee" required></div><div class="form-group"><label for="expense-amount">Miktar (₺)</label><input type="number" step="0.01" id="expense-amount" required></div><div class="form-group"><label for="expense-method">Ödeme Şekli</label><select id="expense-method" required></select></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-expense-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Gider Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-expense-form"><input type="hidden" id="edit-expense-id"><div class="form-group"><label for="edit-expense-date">Tarih</label><input type="date" id="edit-expense-date" required></div><div class="form-group"><label for="edit-expense-category">Kategori</label><select id="edit-expense-category" required></select></div><div class="form-group" id="edit-expense-category-other-group" style="display:none;"><label for="edit-expense-category-other">Kategori Adı (Diğer)</label><input type="text" id="edit-expense-category-other"></div><div class="form-group"><label for="edit-expense-description">Açıklama</label><input type="text" id="edit-expense-description" required></div><div class="form-group"><label for="edit-expense-payee">Alıcı</label><input type="text" id="edit-expense-payee" required></div><div class="form-group"><label for="edit-expense-amount">Miktar (₺)</label><input type="number" step="0.01" id="edit-expense-amount" required></div><div class="form-group"><label for="edit-expense-method">Ödeme Şekli</label><select id="edit-expense-method" required></select></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-income-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Gelir Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-income-form"><div class="form-group"><label for="income-date">Tarih</label><input type="date" id="income-date" required></div><div class="form-group"><label for="income-category">Kategori</label><select id="income-category" required></select></div><div class="form-group" id="income-category-other-group" style="display:none;"><label for="income-category-other">Kategori Adı (Diğer)</label><input type="text" id="income-category-other"></div><div class="form-group"><label for="income-description">Açıklama</label><input type="text" id="income-description" required></div><div class="form-group"><label for="income-source">Kaynak</label><input type="text" id="income-source" required></div><div class="form-group"><label for="income-amount">Miktar (₺)</label><input type="number" step="0.01" id="income-amount" required></div><div class="form-group"><label for="income-method">Ödeme Şekli</label><select id="income-method" required></select></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-income-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Gelir Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-income-form"><input type="hidden" id="edit-income-id"><div class="form-group"><label for="edit-income-date">Tarih</label><input type="date" id="edit-income-date" required></div><div class="form-group"><label for="edit-income-category">Kategori</label><select id="edit-income-category" required></select></div><div class="form-group" id="edit-income-category-other-group" style="display:none;"><label for="edit-income-category-other">Kategori Adı (Diğer)</label><input type="text" id="edit-income-category-other"></div><div class="form-group"><label for="edit-income-description">Açıklama</label><input type="text" id="edit-income-description" required></div><div class="form-group"><label for="edit-income-source">Kaynak</label><input type="text" id="edit-income-source" required></div><div class="form-group"><label for="edit-income-amount">Miktar (₺)</label><input type="number" step="0.01" id="edit-income-amount" required></div><div class="form-group"><label for="edit-income-method">Ödeme Şekli</label><select id="edit-income-method" required></select></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-bilanco-varlik-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Varlık Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-bilanco-varlik-form"><div class="form-group"><label for="bilanco-varlik-name">Varlık Adı</label><input type="text" id="bilanco-varlik-name" required></div><div class="form-group"><label for="bilanco-varlik-amount">Varlık Tutarı (₺)</label><input type="number" step="0.01" id="bilanco-varlik-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-bilanco-varlik-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Varlık Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-bilanco-varlik-form"><input type="hidden" id="edit-bilanco-varlik-id"><div class="form-group"><label for="edit-bilanco-varlik-name">Varlık Adı</label><input type="text" id="edit-bilanco-varlik-name" required></div><div class="form-group"><label for="edit-bilanco-varlik-amount">Varlık Tutarı (₺)</label><input type="number" step="0.01" id="edit-bilanco-varlik-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-bilanco-alacak-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Alacak Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-bilanco-alacak-form"><div class="form-group"><label for="bilanco-alacak-name">Alacağın Adı</label><input type="text" id="bilanco-alacak-name" required></div><div class="form-group"><label for="bilanco-alacak-amount">Alacağın Tutarı (₺)</label><input type="number" step="0.01" id="bilanco-alacak-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-bilanco-alacak-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Alacağı Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-bilanco-alacak-form"><input type="hidden" id="edit-bilanco-alacak-id"><div class="form-group"><label for="edit-bilanco-alacak-name">Alacağın Adı</label><input type="text" id="edit-bilanco-alacak-name" required></div><div class="form-group"><label for="edit-bilanco-alacak-amount">Alacağın Tutarı (₺)</label><input type="number" step="0.01" id="edit-bilanco-alacak-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    
+    <div id="add-bilanco-borc-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Yeni Borç Kaydı</h2><span class="close-modal">&times;</span></div><form id="add-bilanco-borc-form"><div class="form-group"><label for="bilanco-borc-name">Borcun Adı</label><input type="text" id="bilanco-borc-name" required></div><div class="form-group"><label for="bilanco-borc-amount">Borcun Tutarı (₺)</label><input type="number" step="0.01" id="bilanco-borc-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+    <div id="edit-bilanco-borc-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2>Borcu Düzenle</h2><span class="close-modal">&times;</span></div><form id="edit-bilanco-borc-form"><input type="hidden" id="edit-bilanco-borc-id"><div class="form-group"><label for="edit-bilanco-borc-name">Borcun Adı</label><input type="text" id="edit-bilanco-borc-name" required></div><div class="form-group"><label for="edit-bilanco-borc-amount">Borcun Tutarı (₺)</label><input type="number" step="0.01" id="edit-bilanco-borc-amount" required></div><div class="form-actions"><button type="submit" class="btn btn-primary">Kaydet</button><button type="button" class="btn btn-secondary close-modal-btn">İptal</button></div></form></div></div>
+
+    <!-- ÖDEME TAKİP MODALLARI -->
+    <div id="add-payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Yeni Ödeme Ekle</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="add-payment-form">
+                <div class="form-group">
+                    <label for="payment-day">Ödeme Günü (Ayın Kaçı)</label>
+                    <select id="payment-day" required>
+                        <option value="">Gün Seçin...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                        <option value="son-gun">Ayın Son Günü</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="payment-recipient">Alıcı</label>
+                    <input type="text" id="payment-recipient" required>
+                </div>
+                <div class="form-group">
+                    <label for="payment-category">Kategori</label>
+                    <select id="payment-category" required>
+                        <option value="">Kategori Seçin...</option>
+                        <option value="KREDİ KARTI">KREDİ KARTI</option>
+                        <option value="MAAŞ">MAAŞ</option>
+                        <option value="YEMEK">YEMEK</option>
+                        <option value="KREDİ">KREDİ</option>
+                        <option value="AİDAT">AİDAT</option>
+                        <option value="MUHASEBE ÖDEMESİ">MUHASEBE ÖDEMESİ</option>
+                        <option value="ÇEK">ÇEK</option>
+                        <option value="SGK">SGK</option>
+                        <option value="VERGİ">VERGİ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="payment-amount">Tutar (₺)</label>
+                    <input type="number" step="0.01" id="payment-amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="payment-is-recurring">Tekrarlayan Ödeme</label>
+                    <select id="payment-is-recurring" required>
+                        <option value="true" selected>Evet (Her Ay Tekrarlar)</option>
+                        <option value="false">Hayır (Tek Seferlik)</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <button type="button" class="btn btn-secondary close-modal-btn">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="edit-payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ödeme Düzenle</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="edit-payment-form">
+                <input type="hidden" id="edit-payment-id">
+                <div class="form-group">
+                    <label for="edit-payment-day">Ödeme Günü (Ayın Kaçı)</label>
+                    <select id="edit-payment-day" required>
+                        <option value="">Gün Seçin...</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                        <option value="son-gun">Ayın Son Günü</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-payment-recipient">Alıcı</label>
+                    <input type="text" id="edit-payment-recipient" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-payment-category">Kategori</label>
+                    <select id="edit-payment-category" required>
+                        <option value="">Kategori Seçin...</option>
+                        <option value="KREDİ KARTI">KREDİ KARTI</option>
+                        <option value="MAAŞ">MAAŞ</option>
+                        <option value="YEMEK">YEMEK</option>
+                        <option value="KREDİ">KREDİ</option>
+                        <option value="AİDAT">AİDAT</option>
+                        <option value="MUHASEBE ÖDEMESİ">MUHASEBE ÖDEMESİ</option>
+                        <option value="ÇEK">ÇEK</option>
+                        <option value="SGK">SGK</option>
+                        <option value="VERGİ">VERGİ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-payment-amount">Tutar (₺)</label>
+                    <input type="number" step="0.01" id="edit-payment-amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-payment-is-recurring">Tekrarlayan Ödeme</label>
+                    <select id="edit-payment-is-recurring" required>
+                        <option value="true">Evet (Her Ay Tekrarlar)</option>
+                        <option value="false">Hayır (Tek Seferlik)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-payment-status">Bu Ay Durumu</label>
+                    <select id="edit-payment-status" required>
+                        <option value="bekliyor">Bekliyor</option>
+                        <option value="tamamlandı">Tamamlandı</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <button type="button" class="btn btn-secondary close-modal-btn">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ÖDEME TAMAMLAMA MODALI -->
+    <div id="complete-payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ödeme Tamamla</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="complete-payment-form">
+                <input type="hidden" id="complete-payment-id">
+                <input type="hidden" id="complete-payment-month">
+                <div class="form-group">
+                    <label for="complete-payment-method">Ödeme Şekli</label>
+                    <select id="complete-payment-method" required>
+                        <option value="">Ödeme şekli seçin...</option>
+                        <option value="nakit">Nakit</option>
+                        <option value="banka">Banka Transferi</option>
+                        <option value="kredi-karti">Kredi Kartı</option>
+                        <option value="çek">Çek</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="complete-payment-date">Gerçek Ödeme Tarihi</label>
+                    <input type="date" id="complete-payment-date" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Ödemeyi Tamamla</button>
+                    <button type="button" class="btn btn-secondary close-modal-btn">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROJE TAKİP MODALLARI -->
+    <div id="add-project-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Yeni Proje Ekle</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="add-project-form">
+                <div class="form-group">
+                    <label for="project-name">Proje Adı</label>
+                    <input type="text" id="project-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="project-customer">Müşteri</label>
+                    <input type="text" id="project-customer" required>
+                </div>
+                <div class="form-group">
+                    <label for="project-status">Durum</label>
+                    <select id="project-status" required>
+                        <option value="gorusme">Görüşme Aşamasında</option>
+                        <option value="proje">Proje Aşamasında</option>
+                        <option value="ihale">İhale Aşamasında</option>
+                        <option value="devam-ediyor" selected>Devam Ediyor</option>
+                        <option value="tamamlandi">Tamamlandı</option>
+                        <option value="iptal">İptal Edildi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="project-description">Proje Açıklaması</label>
+                    <textarea id="project-description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <button type="button" class="btn btn-secondary close-modal-btn">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="edit-project-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Proje Düzenle</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="edit-project-form">
+                <input type="hidden" id="edit-project-id">
+                <div class="form-group">
+                    <label for="edit-project-name">Proje Adı</label>
+                    <input type="text" id="edit-project-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-project-customer">Müşteri</label>
+                    <input type="text" id="edit-project-customer" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-project-status">Durum</label>
+                    <select id="edit-project-status" required>
+                        <option value="gorusme">Görüşme Aşamasında</option>
+                        <option value="proje">Proje Aşamasında</option>
+                        <option value="ihale">İhale Aşamasında</option>
+                        <option value="devam-ediyor">Devam Ediyor</option>
+                        <option value="tamamlandi">Tamamlandı</option>
+                        <option value="iptal">İptal Edildi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-project-description">Proje Açıklaması</label>
+                    <textarea id="edit-project-description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <button type="button" class="btn btn-secondary close-modal-btn">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- index.html içinde diğer script'lerden önce -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+<!-- Body sonunda, diğerlerinden önce -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// jsPDF Türkçe desteği
+if (typeof jspdf !== 'undefined') {
+    const { jsPDF } = jspdf;
+    
+    // Varsayılan font olarak helvetica kullan (Türkçe karakterleri destekler)
+    jsPDF.prototype.setDefaultFont = function() {
+        this.setFont('helvetica');
+    };
+}
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
