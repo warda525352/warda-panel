@@ -13,7 +13,13 @@ namespace IhaleTeklifHesaplama
         public MainWindow()
         {
             InitializeComponent();
-            // İlk açılışta hesaplamayı yap
+            // Pencere yüklendikten sonra hesaplama yapılacak
+            this.Loaded += MainWindow_Loaded;
+        }
+
+        // Pencere yüklendikten sonra ilk hesaplamayı yap
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
             TeklifHesapla();
         }
 
@@ -34,6 +40,12 @@ namespace IhaleTeklifHesaplama
         {
             try
             {
+                // Kontroller henüz yüklenmediyse çık
+                if (txtMalzemeMaliyet == null || txtIscilikMaliyet == null ||
+                    txtMakineMaliyet == null || txtGenelGiderler == null ||
+                    txtKarMarji == null || txtKDV == null)
+                    return;
+
                 // Giriş değerlerini al ve kontrol et
                 decimal malzemeMaliyet = ParseDecimal(txtMalzemeMaliyet.Text);
                 decimal iscilikMaliyet = ParseDecimal(txtIscilikMaliyet.Text);
@@ -64,14 +76,14 @@ namespace IhaleTeklifHesaplama
                 // 7. Teklif Tutarı (KDV Dahil)
                 decimal teklifTutari = araToplam + kdvTutar;
 
-                // Sonuçları göster
-                lblDirektMaliyet.Content = FormatCurrency(direktMaliyetler);
-                lblGenelGiderlerTutar.Content = FormatCurrency(genelGiderlerTutar);
-                lblToplamMaliyet.Content = FormatCurrency(toplamMaliyet);
-                lblKarTutar.Content = FormatCurrency(karTutar);
-                lblAraToplam.Content = FormatCurrency(araToplam);
-                lblKDVTutar.Content = FormatCurrency(kdvTutar);
-                lblTeklifTutari.Content = FormatCurrency(teklifTutari);
+                // Sonuçları göster (Label'lar da yüklendiyse)
+                if (lblDirektMaliyet != null) lblDirektMaliyet.Content = FormatCurrency(direktMaliyetler);
+                if (lblGenelGiderlerTutar != null) lblGenelGiderlerTutar.Content = FormatCurrency(genelGiderlerTutar);
+                if (lblToplamMaliyet != null) lblToplamMaliyet.Content = FormatCurrency(toplamMaliyet);
+                if (lblKarTutar != null) lblKarTutar.Content = FormatCurrency(karTutar);
+                if (lblAraToplam != null) lblAraToplam.Content = FormatCurrency(araToplam);
+                if (lblKDVTutar != null) lblKDVTutar.Content = FormatCurrency(kdvTutar);
+                if (lblTeklifTutari != null) lblTeklifTutari.Content = FormatCurrency(teklifTutari);
             }
             catch (Exception ex)
             {
