@@ -1,0 +1,184 @@
+<Window x:Class="IhaleTeklifHesaplama.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="İhale Teklif Tutarı Hesaplama" Height="700" Width="600"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <!-- Modern stil tanımlamaları -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8,5"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="ModernLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+
+        <Style x:Key="HeaderLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Başlık -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="15" CornerRadius="5" Margin="0,0,0,20">
+            <Label Content="İHALE TEKLİF TUTARI HESAPLAMA"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   HorizontalAlignment="Center"/>
+        </Border>
+
+        <!-- Ana İçerik -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Maliyet Girdileri -->
+                <Border Background="White" Padding="20" CornerRadius="5" Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="MALİYET GİRDİLERİ" Style="{StaticResource HeaderLabel}" Margin="0,0,0,15"/>
+
+                        <Label Content="Malzeme Maliyeti (TL):" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="txtMalzemeMaliyet" Style="{StaticResource ModernTextBox}"
+                                 Text="0" TextChanged="HesaplamaGuncelle" Margin="0,5,0,15"/>
+
+                        <Label Content="İşçilik Maliyeti (TL):" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="txtIscilikMaliyet" Style="{StaticResource ModernTextBox}"
+                                 Text="0" TextChanged="HesaplamaGuncelle" Margin="0,5,0,15"/>
+
+                        <Label Content="Makine/Ekipman Maliyeti (TL):" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="txtMakineMaliyet" Style="{StaticResource ModernTextBox}"
+                                 Text="0" TextChanged="HesaplamaGuncelle" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Yüzde Oranları -->
+                <Border Background="White" Padding="20" CornerRadius="5" Margin="0,0,0,15">
+                    <StackPanel>
+                        <Label Content="YÜZDE ORANLARI" Style="{StaticResource HeaderLabel}" Margin="0,0,0,15"/>
+
+                        <Label Content="Genel Giderler (%):" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="txtGenelGiderler" Style="{StaticResource ModernTextBox}"
+                                 Text="10" TextChanged="HesaplamaGuncelle" Margin="0,5,0,15"/>
+
+                        <Label Content="Kar Marjı (%):" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="txtKarMarji" Style="{StaticResource ModernTextBox}"
+                                 Text="15" TextChanged="HesaplamaGuncelle" Margin="0,5,0,15"/>
+
+                        <Label Content="KDV Oranı (%):" Style="{StaticResource ModernLabel}"/>
+                        <TextBox x:Name="txtKDV" Style="{StaticResource ModernTextBox}"
+                                 Text="20" TextChanged="HesaplamaGuncelle" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Hesaplama Sonuçları -->
+                <Border Background="#E8F5E9" Padding="20" CornerRadius="5" BorderBrush="#4CAF50" BorderThickness="2">
+                    <StackPanel>
+                        <Label Content="HESAPLAMA SONUÇLARI" Style="{StaticResource HeaderLabel}"
+                               Foreground="#2E7D32" Margin="0,0,0,15"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0" Content="Direkt Maliyetler:" FontWeight="Medium"/>
+                            <Label Grid.Row="0" Grid.Column="1" x:Name="lblDirektMaliyet" Content="0,00 TL"
+                                   FontWeight="Bold" HorizontalAlignment="Right"/>
+
+                            <Label Grid.Row="1" Grid.Column="0" Content="Genel Giderler:" FontWeight="Medium" Margin="0,5,0,0"/>
+                            <Label Grid.Row="1" Grid.Column="1" x:Name="lblGenelGiderlerTutar" Content="0,00 TL"
+                                   FontWeight="Bold" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+
+                            <Label Grid.Row="2" Grid.Column="0" Content="Toplam Maliyet:" FontWeight="Medium" Margin="0,5,0,0"/>
+                            <Label Grid.Row="2" Grid.Column="1" x:Name="lblToplamMaliyet" Content="0,00 TL"
+                                   FontWeight="Bold" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+
+                            <Label Grid.Row="3" Grid.Column="0" Content="Kar:" FontWeight="Medium" Margin="0,5,0,0"/>
+                            <Label Grid.Row="3" Grid.Column="1" x:Name="lblKarTutar" Content="0,00 TL"
+                                   FontWeight="Bold" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+
+                            <Label Grid.Row="4" Grid.Column="0" Content="Ara Toplam (KDV Hariç):" FontWeight="Medium" Margin="0,5,0,0"/>
+                            <Label Grid.Row="4" Grid.Column="1" x:Name="lblAraToplam" Content="0,00 TL"
+                                   FontWeight="Bold" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+
+                            <Label Grid.Row="5" Grid.Column="0" Content="KDV:" FontWeight="Medium" Margin="0,5,0,0"/>
+                            <Label Grid.Row="5" Grid.Column="1" x:Name="lblKDVTutar" Content="0,00 TL"
+                                   FontWeight="Bold" HorizontalAlignment="Right" Margin="0,5,0,0"/>
+
+                            <Separator Grid.Row="6" Grid.ColumnSpan="2" Margin="0,10,0,10" Background="#4CAF50"/>
+                        </Grid>
+
+                        <Border Background="#4CAF50" Padding="10" CornerRadius="5" Margin="0,5,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Column="0" Content="TEKLİF TUTARI:"
+                                       FontSize="16" FontWeight="Bold" Foreground="White"/>
+                                <Label Grid.Column="1" x:Name="lblTeklifTutari" Content="0,00 TL"
+                                       FontSize="18" FontWeight="Bold" Foreground="White"
+                                       HorizontalAlignment="Right"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Hesapla Butonu -->
+        <Button Grid.Row="2"
+                Content="HESAPLA"
+                Height="50"
+                FontSize="16"
+                FontWeight="Bold"
+                Background="#2196F3"
+                Foreground="White"
+                BorderThickness="0"
+                Cursor="Hand"
+                Margin="0,20,0,0"
+                Click="BtnHesapla_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+
+        <!-- Alt Bilgi -->
+        <Label Grid.Row="3"
+               Content="© 2025 - İhale Teklif Hesaplama Programı"
+               HorizontalAlignment="Center"
+               FontSize="10"
+               Foreground="#999999"
+               Margin="0,15,0,0"/>
+    </Grid>
+</Window>
