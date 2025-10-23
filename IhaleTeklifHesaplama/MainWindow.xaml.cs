@@ -83,8 +83,11 @@ namespace IhaleTeklifHesaplama
                 // 8. Teklif Tutarı (KDV Dahil)
                 decimal teklifTutari = araToplam + kdvTutar;
 
-                // 9. Teminat Tutarı (Teklif tutarının %3'ü)
-                decimal teminatTutari = teklifTutari * 0.03m;
+                // 9. Geçici Teminat Tutarı (Teklif tutarının %3'ü)
+                decimal geciciTeminatTutari = teklifTutari * 0.03m;
+
+                // 10. Kesin Teminat Tutarı (Teklif tutarının %6'sı)
+                decimal kesinTeminatTutari = teklifTutari * 0.06m;
 
                 // Sonuçları göster (Label'lar da yüklendiyse)
                 if (lblDirektMaliyet != null) lblDirektMaliyet.Content = FormatCurrency(direktMaliyetler);
@@ -95,7 +98,8 @@ namespace IhaleTeklifHesaplama
                 if (lblAraToplam != null) lblAraToplam.Content = FormatCurrency(araToplam);
                 if (lblKDVTutar != null) lblKDVTutar.Content = FormatCurrency(kdvTutar);
                 if (lblTeklifTutari != null) lblTeklifTutari.Content = FormatCurrency(teklifTutari);
-                if (lblTeminatTutari != null) lblTeminatTutari.Content = FormatCurrency(teminatTutari);
+                if (lblGeciciTeminatTutari != null) lblGeciciTeminatTutari.Content = FormatCurrency(geciciTeminatTutari);
+                if (lblKesinTeminatTutari != null) lblKesinTeminatTutari.Content = FormatCurrency(kesinTeminatTutari);
             }
             catch (Exception ex)
             {
